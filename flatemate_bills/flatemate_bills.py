@@ -3,9 +3,6 @@ class Flatmate:
         self.name = name
         self.days_in_house = days_in_house
         
-    def calculation_bills(self, total_bill, total_days):
-        return
-        
 class Bill:
     def __init__(self, amount, period):
         self.amount = amount
@@ -14,17 +11,41 @@ class Bill:
 
 class FlatematesBillSplitter:
     def __init__(self):
-        self.faltemates = []
+        self.flatmates = []
         
     def add_flatemate(self, name, days_in_house):
-        flate_mate = Flatmate(name, days_in_house)
-        self.faltemates.append(flate_mate)
+        flatemate = Flatmate(name, days_in_house)
+        self.flatmates.append(flatemate)
         # print(self.faltemates)
+        
+    def calculate_shares(self, bill):
+        total_days = sum(flatmate.days_in_house for flatmate in self.flatmates)
+        print(total_days)
+        shares = {}
+        for flatmate in self.flatmates:
+            shares[flatmate.name] = self.calculate_bills(
+                total_bill=bill.amount, 
+                total_days=total_days,
+                days_in_house= flatmate.days_in_house,
+                )
+        return shares
+
+    def display_shares(self, bill):
+        print(f"\nBill Period: {bill.period}")
+        print(f"Total Bill Amount: ${bill.amount}\n")
+        shares = self.calculate_shares(bill)
+        # print(shares)
+        for name, share in shares.items():
+            print(f"{name} owes: ${share}")
         
     def show_flatemates(self):
         print("\nList of Flatmates:")
         for flatemate in self.faltemates:
             print(f"Name: {flatemate.name}, Days Stayed: {flatemate.days_in_house}")
+            
+    def calculate_bills(self, total_bill, total_days, days_in_house):
+        return round((days_in_house / total_days) * total_bill, 2)
+        
 
 
 # Here is the main function
@@ -48,4 +69,9 @@ if __name__ == "__main__":
                        
         splitter.add_flatemate(name, days)
     
-    splitter.show_flatemates()
+    # splitter.show_flatemates()
+    amount = float(input("\nEnter total bill amount: $"))
+    period = input("Enter billing period (e.g., March 2025): ")
+    bill = Bill(amount, period)
+    splitter.display_shares(bill)
+    
